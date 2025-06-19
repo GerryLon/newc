@@ -11,7 +11,7 @@ A code generator that generates constructor code for Golang structures.
 ## Installation
 
 ```bash
-go install github.com/Bin-Huang/newc@latest
+go install github.com/GerryLon/newc@latest
 ```
 
 ## Usage
@@ -42,7 +42,7 @@ func NewUserService(baseService baseService, userRepository *repositories.UserRe
 }
 ```
 
-See [more examples here](https://github.com/Bin-Huang/newc/tree/master/test)
+See [more examples here](https://github.com/GerryLon/newc/tree/master/test)
 
 ## Usage without manual installation
 
@@ -51,13 +51,13 @@ See [more examples here](https://github.com/Bin-Huang/newc/tree/master/test)
 Without manual installation, just add this comment line to the struct. Go will automatically install this tool if missing.
 
 ```go
-//go:generate go run github.com/Bin-Huang/newc@v0.8.3
+//go:generate go run github.com/GerryLon/newc@v0.8.3
 ```
 
 For example:
 
 ```go
-//go:generate go run github.com/Bin-Huang/newc@v0.8.3
+//go:generate go run github.com/GerryLon/newc@v0.8.3
 type UserService struct {
 	baseService
 	userRepository *repositories.UserRepository
@@ -171,7 +171,7 @@ Don't worry about the imports, variable naming, and code style in the generated 
 It doesn't break the work of other people who don't have installed this tool in collaboration. Go will automatically install this tool if missing.
 
 ```go
-//go:generate go run github.com/Bin-Huang/newc@v0.8.3
+//go:generate go run github.com/GerryLon/newc@v0.8.3
 ```
 
 ## Sponsoring

@@ -1,4 +1,4 @@
-module github.com/Bin-Huang/newc
+module github.com/GerryLon/newc
 
 go 1.18
 

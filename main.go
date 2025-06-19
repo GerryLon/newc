@@ -13,8 +13,8 @@ func main() {
 	if err != nil {
 		fmt.Printf("newc: [ERROR] %v\n", err)
 		fmt.Printf("It seems like there is some trouble here. Try this:\n")
-		fmt.Printf("\t1. Check and upgrade this tool (https://github.com/Bin-Huang/newc)\n")
-		fmt.Printf("\t2. Submit an issue on Github (https://github.com/Bin-Huang/newc/issues)\n")
+		fmt.Printf("\t1. Check and upgrade this tool (https://github.com/GerryLon/newc)\n")
+		fmt.Printf("\t2. Submit an issue on Github (https://github.com/GerryLon/newc/issues)\n")
 		os.Exit(1)
 	}
 }

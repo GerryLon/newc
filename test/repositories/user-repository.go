@@ -3,7 +3,7 @@ package repositories
 import (
 	"errors"
 
-	config2 "github.com/Bin-Huang/newc/test/config2"
+	config2 "github.com/GerryLon/newc/test/config2"
 )
 
 // UserRepository the user repository for example

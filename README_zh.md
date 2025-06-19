@@ -11,7 +11,7 @@ Doc: [English](README.md) | **中文**
 ## 安装
 
 ```bash
-go install github.com/Bin-Huang/newc@latest
+go install github.com/GerryLon/newc@latest
 ```
 
 ## 使用方法
@@ -42,7 +42,7 @@ func NewUserService(baseService baseService, userRepository *repositories.UserRe
 }
 ```
 
-这里可以[查看更多例子](https://github.com/Bin-Huang/newc/tree/master/test)
+这里可以[查看更多例子](https://github.com/GerryLon/newc/tree/master/test)
 
 ## 使用方式2（无需手动安装）
 
@@ -51,13 +51,13 @@ func NewUserService(baseService baseService, userRepository *repositories.UserRe
 无需手动安装，只需要给结构体添加下面这行注释就行。Go 会在缺失时自动下载这个工具。
 
 ```go
-//go:generate go run github.com/Bin-Huang/newc@v0.8.3
+//go:generate go run github.com/GerryLon/newc@v0.8.3
 ```
 
 比如这样：
 
 ```go
-//go:generate go run github.com/Bin-Huang/newc@v0.8.3
+//go:generate go run github.com/GerryLon/newc@v0.8.3
 type UserService struct {
 	baseService
 	userRepository *repositories.UserRepository
@@ -171,7 +171,7 @@ func NewForbidden(msg string) *Forbidden {
 就算其他同事没有安装这个工具，这么做也不会影响到他们的工作。因为 Go 会在必要时自动安装这个工具。
 
 ```go
-//go:generate go run github.com/Bin-Huang/newc@v0.8.3
+//go:generate go run github.com/GerryLon/newc@v0.8.3
 ```
 
 ## 赞赏

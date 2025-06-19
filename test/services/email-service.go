@@ -3,7 +3,7 @@ package services
 import (
 	"log"
 
-	"github.com/Bin-Huang/newc/test/repositories"
+	"github.com/GerryLon/newc/test/repositories"
 )
 
 // EmailService email service for example

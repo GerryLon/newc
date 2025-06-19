@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"github.com/Bin-Huang/newc/test/config"
-	"github.com/Bin-Huang/newc/test/pkg/errors"
+	"github.com/GerryLon/newc/test/config"
+	"github.com/GerryLon/newc/test/pkg/errors"
 )
 
 // ProRepository a repository for example

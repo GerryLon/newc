@@ -54,12 +54,21 @@ type StructWithInitError struct {
 	Msg   string
 }
 
-func (s *StructWithInitError) init() error {
+type MyError struct {
+	errStr string
+}
+
+func (m *MyError) Error() string {
+	return m.errStr
+}
+
+func (s *StructWithInitError) init() (int, error) {
 	if s.Msg == "" {
-		return fmt.Errorf("message cannot be empty")
+		//return fmt.Errorf("message cannot be empty")
+		return 0, &MyError{errStr: "message cannot be empty"}
 	}
 	s.Debug = true
-	return nil
+	return 0, nil
 }
 
 // StructValueWithInitError ...

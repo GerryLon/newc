@@ -108,17 +108,21 @@ func ParseCodeFile(filename string) ([]StructInfo, []ImportInfo, error) {
 			}
 
 			if structName != "" {
-				// 检查返回值是否包含 error
-				hasError := false
+				// 检查返回值是否只包含 error
+				onlyReturnError := false
 				if funcDecl.Type.Results != nil {
+					if len(funcDecl.Type.Results.List) > 1 {
+						// 只支持返回一个参数(error)或者无返回值的情况, 更多参数不支持
+						return nil, nil, fmt.Errorf("init方法只支持返回error或者不返回任何值, 实际上结构体\"%v\"有%d个返回值", structName, len(funcDecl.Type.Results.List))
+					}
 					for _, result := range funcDecl.Type.Results.List {
 						if ident, ok := result.Type.(*ast.Ident); ok && ident.Name == "error" {
-							hasError = true
+							onlyReturnError = true
 							break
 						}
 					}
 				}
-				initMethods[structName] = hasError
+				initMethods[structName] = onlyReturnError
 			}
 		}
 	}

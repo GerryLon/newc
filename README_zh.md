@@ -96,6 +96,10 @@ func NewConfig(debug bool) Config {
 1. 加上 `--init` 参数
 2. 为结构体实现一个 `init` 方法
 
+`init` 方法可以选择性地返回一个 `error`。如果返回了错误，生成的构造器也会返回错误。
+
+**示例1：init 方法不返回错误**
+
 ```go
 //go:generate newc --init
 type Controller struct {
@@ -122,6 +126,47 @@ func NewController(logger *zap.Logger, debug bool) *Controller {
 	}
 	s.init()
 	return s
+}
+```
+
+**示例2：init 方法返回错误**
+
+```go
+//go:generate newc --init
+type Database struct {
+	conn   *sql.DB
+	config *Config
+}
+
+func (d *Database) init() error {
+	if d.config == nil {
+		return errors.New("config cannot be nil")
+	}
+	
+	var err error
+	d.conn, err = sql.Open("mysql", d.config.DSN)
+	if err != nil {
+		return fmt.Errorf("failed to connect to database: %w", err)
+	}
+	
+	return nil
+}
+```
+
+生成代码：
+
+```go
+// constructor_gen.go
+
+// NewDatabase Create a new Database
+func NewDatabase(config *Config) (*Database, error) {
+	s := &Database{
+		config: config,
+	}
+	if err := s.init(); err != nil {
+		return nil, err
+	}
+	return s, nil
 }
 ```
 
@@ -160,7 +205,7 @@ func NewForbidden(msg string) *Forbidden {
 
 不管是编写还是更新构造器代码，都是一个费力且容易出错的事情，尤其当代码量很大的时候。这些繁琐易错的工作应该交给自动程序来完成，比如这个工具。
 
-同时，这个工具还能完美兼容像[**wire**](https://github.com/google/wire)这种依赖注入工具。如果你的项目中也使用了 **wire**，那你可能非常需要这个工具。**wire** 在 **newc** 的“加持”下会变得更加好用。
+同时，这个工具还能完美兼容像[**wire**](https://github.com/google/wire)这种依赖注入工具。如果你的项目中也使用了 **wire**，那你可能非常需要这个工具。**wire** 在 **newc** 的"加持"下会变得更加好用。
 
 **2. 你不需要担心自动生成的代码**.
 

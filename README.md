@@ -96,6 +96,10 @@ func NewConfig(debug bool) Config {
 1. Add `--init` parameter
 2. Write an `init` method for the struct
 
+The `init` method can optionally return an `error`. If it does, the generated constructor will also return an error.
+
+**Example 1: init method without error**
+
 ```go
 //go:generate newc --init
 type Controller struct {
@@ -122,6 +126,47 @@ func NewController(logger *zap.Logger, debug bool) *Controller {
 	}
 	s.init()
 	return s
+}
+```
+
+**Example 2: init method with error**
+
+```go
+//go:generate newc --init
+type Database struct {
+	conn   *sql.DB
+	config *Config
+}
+
+func (d *Database) init() error {
+	if d.config == nil {
+		return errors.New("config cannot be nil")
+	}
+	
+	var err error
+	d.conn, err = sql.Open("mysql", d.config.DSN)
+	if err != nil {
+		return fmt.Errorf("failed to connect to database: %w", err)
+	}
+	
+	return nil
+}
+```
+
+Generated code:
+
+```go
+// constructor_gen.go
+
+// NewDatabase Create a new Database
+func NewDatabase(config *Config) (*Database, error) {
+	s := &Database{
+		config: config,
+	}
+	if err := s.init(); err != nil {
+		return nil, err
+	}
+	return s, nil
 }
 ```
 

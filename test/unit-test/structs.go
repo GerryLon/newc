@@ -1,5 +1,9 @@
 package unittest
 
+import (
+	"fmt"
+)
+
 // StructRef ...
 //go:generate go run ../../../newc
 type StructRef struct {
@@ -41,4 +45,34 @@ type Skipeed struct {
 
 func (e *Skipeed) init() {
 	e.Status = 403
+}
+
+// StructWithInitError ...
+//go:generate go run ../../../newc --init
+type StructWithInitError struct {
+	Debug bool
+	Msg   string
+}
+
+func (s *StructWithInitError) init() error {
+	if s.Msg == "" {
+		return fmt.Errorf("message cannot be empty")
+	}
+	s.Debug = true
+	return nil
+}
+
+// StructValueWithInitError ...
+//go:generate go run ../../../newc --value --init
+type StructValueWithInitError struct {
+	Debug bool
+	Msg   string
+}
+
+func (s *StructValueWithInitError) init() (x error) {
+	if s.Msg == "" {
+		return fmt.Errorf("message cannot be empty")
+	}
+	s.Debug = true
+	return nil
 }

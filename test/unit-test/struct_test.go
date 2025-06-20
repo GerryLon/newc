@@ -45,3 +45,53 @@ func TestSkipped(t *testing.T) {
 		t.Errorf("NewSkipeed should calling init method")
 	}
 }
+
+func TestStructWithInitError(t *testing.T) {
+	// 测试正常情况
+	s, err := NewStructWithInitError(true, "test message")
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
+	if s == nil {
+		t.Error("Expected non-nil struct")
+	}
+	if !s.Debug {
+		t.Error("Expected Debug to be true")
+	}
+	if s.Msg != "test message" {
+		t.Errorf("Expected Msg to be 'test message', got %s", s.Msg)
+	}
+
+	// 测试错误情况
+	s2, err := NewStructWithInitError(true, "")
+	if err == nil {
+		t.Error("Expected error for empty message")
+	}
+	if s2 != nil {
+		t.Error("Expected nil struct when error occurs")
+	}
+}
+
+func TestStructValueWithInitError(t *testing.T) {
+	// 测试正常情况
+	s, err := NewStructValueWithInitError(true, "test message")
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
+	if !s.Debug {
+		t.Error("Expected Debug to be true")
+	}
+	if s.Msg != "test message" {
+		t.Errorf("Expected Msg to be 'test message', got %s", s.Msg)
+	}
+
+	// 测试错误情况
+	s2, err := NewStructValueWithInitError(true, "")
+	if err == nil {
+		t.Error("Expected error for empty message")
+	}
+	// 对于值类型，错误时应该返回零值
+	if s2.Debug || s2.Msg != "" {
+		t.Error("Expected zero value struct when error occurs")
+	}
+}

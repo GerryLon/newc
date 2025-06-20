@@ -42,3 +42,29 @@ func NewSkipeed(msg string) Skipeed {
 	s.init()
 	return s
 }
+
+// NewStructWithInitError Create a new StructWithInitError
+func NewStructWithInitError(debug bool, msg string) (*StructWithInitError, error) {
+	s := &StructWithInitError{
+		Debug: debug,
+		Msg:   msg,
+	}
+	initErr := s.init()
+	if initErr != nil {
+		return nil, initErr
+	}
+	return s, nil
+}
+
+// NewStructValueWithInitError Create a new StructValueWithInitError
+func NewStructValueWithInitError(debug bool, msg string) (StructValueWithInitError, error) {
+	s := StructValueWithInitError{
+		Debug: debug,
+		Msg:   msg,
+	}
+	initErr := s.init()
+	if initErr != nil {
+		return StructValueWithInitError{}, initErr
+	}
+	return s, nil
+}

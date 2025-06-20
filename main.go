@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -59,7 +58,7 @@ func makeConstructor() error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(genFilename, []byte(code), 0644)
+	err = os.WriteFile(genFilename, []byte(code), 0644)
 	if err != nil {
 		return err
 	}

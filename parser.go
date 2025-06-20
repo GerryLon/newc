@@ -3,14 +3,12 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"os"
-	"strings"
-
 	"go/ast"
-	"go/types"
-
 	"go/parser"
 	"go/token"
+	"go/types"
+	"os"
+	"strings"
 
 	"golang.org/x/tools/go/packages"
 )
@@ -69,6 +67,7 @@ type StructInfo struct {
 	StructName string
 	InitFlag   bool
 	ValueFlag  bool
+	InitError  bool
 	Fields     []StructField
 }
 
@@ -87,6 +86,43 @@ func ParseCodeFile(filename string) ([]StructInfo, []ImportInfo, error) {
 	if err != nil {
 		return structs, imports, err
 	}
+
+	// 先收集所有的 init 方法信息
+	initMethods := make(map[string]bool) // structName -> hasErrorReturn
+	for _, decl := range astFile.Decls {
+		funcDecl, ok := decl.(*ast.FuncDecl)
+		if !ok || funcDecl.Recv == nil || funcDecl.Name.Name != "init" {
+			continue
+		}
+
+		// 检查接收者类型
+		if len(funcDecl.Recv.List) > 0 {
+			recvType := funcDecl.Recv.List[0].Type
+			var structName string
+			if starExpr, ok := recvType.(*ast.StarExpr); ok {
+				if ident, ok := starExpr.X.(*ast.Ident); ok {
+					structName = ident.Name
+				}
+			} else if ident, ok := recvType.(*ast.Ident); ok {
+				structName = ident.Name
+			}
+
+			if structName != "" {
+				// 检查返回值是否包含 error
+				hasError := false
+				if funcDecl.Type.Results != nil {
+					for _, result := range funcDecl.Type.Results.List {
+						if ident, ok := result.Type.(*ast.Ident); ok && ident.Name == "error" {
+							hasError = true
+							break
+						}
+					}
+				}
+				initMethods[structName] = hasError
+			}
+		}
+	}
+
 	for _, decl := range astFile.Decls {
 		genDecl, ok := decl.(*ast.GenDecl)
 		if !ok {
@@ -160,11 +196,16 @@ func ParseCodeFile(filename string) ([]StructInfo, []ImportInfo, error) {
 					Skipped: isSkippedField(field),
 				})
 			}
+
+			// 检查是否有 init 方法返回 error
+			initError := initMethods[typeSpec.Name.Name]
+
 			structs = append(structs, StructInfo{
 				StructName: typeSpec.Name.Name,
 				Fields:     structFields,
 				InitFlag:   initMode,
 				ValueFlag:  valueMode,
+				InitError:  initError,
 			})
 		}
 	}

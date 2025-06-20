@@ -26,13 +26,21 @@ import (
 
 {{ range .Constructors }}
 // {{.Name}} Create a new {{.Struct}}
-func {{.Name}}({{.Params}}) {{if not .ValueFlag}}*{{end -}} {{.Struct}} {
+func {{.Name}}({{.Params}}) {{if .InitError}}({{if not .ValueFlag}}*{{end -}} {{.Struct}}, error){{else}}{{if not .ValueFlag}}*{{end -}} {{.Struct}}{{end}} {
 	{{ if .InitFlag -}}
     s := {{if not .ValueFlag}}&{{end -}} {{.Struct}} {
         {{.Fields}}
     }
+	{{ if .InitError -}}
+	initErr := s.init()
+	if initErr != nil {
+		return {{if not .ValueFlag}}nil{{else}}{{.Struct}}{}{{end}}, initErr
+	}
+	return s, nil
+	{{ else -}}
 	s.init()
 	return s
+	{{ end -}}
 	{{ else -}}
     return {{if not .ValueFlag}}&{{end -}} {{.Struct}} {
         {{.Fields}}
@@ -73,6 +81,7 @@ func GenerateCode(pkgName string, importInfos []ImportInfo, structInfos []Struct
 			"Struct":    structInfo.StructName,
 			"InitFlag":  structInfo.InitFlag,
 			"ValueFlag": structInfo.ValueFlag,
+			"InitError": structInfo.InitError,
 			"Params":    strings.Join(params, ", "),
 			"Fields":    strings.Join(fields, "\n"),
 		})
